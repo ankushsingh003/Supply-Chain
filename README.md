@@ -5,7 +5,7 @@
 [![Render Deployment](https://img.shields.io/badge/Deploy-Render-46E3B7)](https://render.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Leveraging Computer Vision & Statistical Arbitrage to monitor global freight movement for Hedge Fund Alpha.**
+> **A Quantitative Research Suite utilizing YOLOv11 Computer Vision to extract high-frequency logistical telemetry, transforming visual freight activity into non-linear 'Qualitative Alpha' through Statistical Anomaly Detection (Z-Scores) and Time-Series Forecasting.**
 
 ---
 
