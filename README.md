@@ -8,8 +8,13 @@ Leveraging YOLO v11 to monitor supply chain activity (e.g., freight movement) to
 - **Alpha Engine**: Trend analysis and financial signal generation.
 - **Interactive Dashboard**: Streamlit-based visualization of supply chain velocity.
 
-## Getting Started
-1. Install dependencies: `pip install ultralytics opencv-python pandas streamlit plotly`
+## Deployment
+This project is configured for deployment on [Render](https://render.com).
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ankushsingh003/Supply-Chain)
+
+### Local Setup
+1. Install dependencies: `pip install -r requirements.txt`
 2. Run the dashboard: `streamlit run dashboard.py`
 
 ## Architecture
