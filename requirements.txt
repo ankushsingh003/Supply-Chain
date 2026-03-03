@@ -6,4 +6,3 @@ streamlit
 plotly
 scipy
 statsmodels
-sqlite3
