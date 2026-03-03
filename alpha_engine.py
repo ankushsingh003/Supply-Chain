@@ -1,50 +1,65 @@
 import pandas as pd
 import numpy as np
+from scipy import stats
 
 class AlphaEngine:
-    def __init__(self, historical_baseline=None):
+    def __init__(self, historical_baseline=15.0):
         """
-        Engine for calculating 'Qualitative Alpha' from freight activity.
+        Research-grade Alpha Engine with statistical anomaly detection.
         """
-        self.baseline = historical_baseline or 10.0 # Standard mean activity
+        self.baseline = historical_baseline
+        self.window_size = 30 # Rolling window for Z-Score calculation
 
-    def calculate_activity_index(self, window_data):
+    def calculate_z_score(self, current_value, history):
         """
-        Calculate an index score based on current vs baseline activity.
+        Determine how many standard deviations the current activity is from the mean.
+        Standard research method for identifying supply chain shocks.
         """
-        if window_data.empty:
+        if len(history) < 5:
             return 0.0
         
+        mean = history['activity'].mean()
+        std = history['activity'].std()
+        
+        if std == 0:
+            return 0.0
+            
+        z_score = (current_value - mean) / std
+        return round(float(z_score), 3)
+
+    def calculate_activity_index(self, window_data):
+        if window_data.empty:
+            return 0.0
         current_mean = window_data['activity'].mean()
         index = (current_mean / self.baseline) * 100
         return round(index, 2)
 
     def detect_trends(self, full_history):
-        """
-        Analyze if supply chain velocity is accelerating or decelerating.
-        """
-        if len(full_history) < 20:
-            return "Neutral (Insufficient Data)"
+        if len(full_history) < 10:
+            return "Stabilizing..."
         
-        # Simple slope of activity counts
         activities = full_history['activity'].values
-        slope = np.polyfit(np.arange(len(activities)), activities, 1)[0]
+        # Using linear regression to detect velocity changes
+        x = np.arange(len(activities))
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x, activities)
         
-        if slope > 0.1:
-            return "Bullish (Increasing Logistics Velocity)"
-        elif slope < -0.1:
-            return "Bearish (Decelerating Volume)"
-        return "Stable"
+        if slope > 0.1 and p_value < 0.05:
+            return "Statistically Significant Expansion"
+        elif slope < -0.1 and p_value < 0.05:
+            return "Statistically Significant Contraction"
+        return "Neutral / Sideways Volume"
 
-    def get_alpha_signal(self, current_index, trend):
+    def get_alpha_signal(self, z_score, trend):
         """
-        Generate a qualitative alpha recommendation.
+        Multi-factor alpha generation.
         """
-        if current_index > 120 and "Bullish" in trend:
-            return "Strong Expansion - Positive Alpha Catalyst"
-        elif current_index < 80 and "Bearish" in trend:
-            return "Logistical Contraction - Negative Alpha Outlook"
-        return "Market-Weight Logistical Flow"
+        if z_score > 2.0 and "Expansion" in trend:
+            return "ALPHA BUY: Supply Chain Hyper-Velocity"
+        elif z_score < -2.0 and "Contraction" in trend:
+            return "ALPHA SELL: Terminal Paralysis / Shock"
+        elif abs(z_score) > 3.0:
+            return "RESEARCH ALERT: Logistical Outlier Detected"
+        return "Market Weight"
 
 if __name__ == "__main__":
     # Test engine
